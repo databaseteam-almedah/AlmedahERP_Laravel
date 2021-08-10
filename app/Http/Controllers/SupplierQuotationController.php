@@ -123,6 +123,10 @@ class SupplierQuotationController extends Controller
             }
             $supp_quotation->items_list_rate_amt = json_encode($items_list_rate_amt);
 
+            $supp_quotation->save();
+            $id = $supp_quotation->id;
+            $supp_quotation->supp_quotation_id = "PUR-SQTN-" . Carbon::now()->year . "-" . str_pad($id, 5, '0', STR_PAD_LEFT);
+          
             foreach ($items_list_rate_amt as $item) {
                 $supp_quotation->grand_total += ($item['quantity_requested'] * $item['rate']);
 
@@ -134,9 +138,7 @@ class SupplierQuotationController extends Controller
                 $saveList->date_created = Carbon::now();
                 $saveList->save();
             }
-            $supp_quotation->save();
-            $id = $supp_quotation->id;
-            $supp_quotation->supp_quotation_id = "PUR-SQTN-" . Carbon::now()->year . "-" . str_pad($id, 5, '0', STR_PAD_LEFT);
+
             $supp_quotation->save();
             return response()->json([
                 'redirect' => route('supplierquotation.index')               
@@ -225,7 +227,7 @@ class SupplierQuotationController extends Controller
                 $supplierquotation->grand_total += ($item['quantity_requested'] * $item['rate']);
 
                 $saveList = new supplierReports();
-                $saveList->supp_quotation_id = "PUR-SQTN-" . Carbon::now()->year . "-" . str_pad($id, 5, '0', STR_PAD_LEFT);
+                // $saveList->supp_quotation_id = "PUR-SQTN-" . Carbon::now()->year . "-" . str_pad($id, 5, '0', STR_PAD_LEFT);
                 $saveList->supplier_id = request('supplier_id');
                 $saveList->item_code = $item['item_code'];
                 $saveList->rate = $item['rate'];
